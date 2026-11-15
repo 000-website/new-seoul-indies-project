@@ -1,7 +1,21 @@
 ---
-import Layout from '../../layouts/Layout.astro';
----
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
 
-<Layout title="placeholder">
- 
-</Layout>
+export async function getStaticPaths() {
+  const friends = await getCollection("friends");
+
+  return friends.map((friend) => ({
+    params: { slug: friend.id },
+    props: { friend },
+  }));
+}
+
+type Props = {
+  friend: CollectionEntry<"friends">;
+};
+
+const { friend } = Astro.props;
+const { Content } = await render(friend);
+---
