@@ -1,0 +1,51 @@
+---
+import {
+  siInstagram,
+  siYoutube,
+  siX,
+  siFacebook,
+  siDiscord,
+  siTiktok,
+  siTwitch,
+} from 'simple-icons/icons';
+
+type Platform =
+  | 'instagram'
+  | 'youtube'
+  | 'twitter'
+  | 'facebook'
+  | 'discord'
+  | 'tiktok'
+  | 'twitch';
+
+interface Props {
+  platform: Platform;
+  size?: number;
+}
+
+const { platform, size = 20 } = Astro.props;
+
+const icons: Record<Platform, typeof siInstagram> = {
+  instagram: siInstagram,
+  youtube: siYoutube,
+  twitter: siX,
+  facebook: siFacebook,
+  discord: siDiscord,
+  tiktok: siTiktok,
+  twitch: siTwitch,
+};
+
+const icon = icons[platform];
+---
+
+<svg
+  role="img"
+  aria-label={icon.title}
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="currentColor"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path d={icon.path} />
+</svg>

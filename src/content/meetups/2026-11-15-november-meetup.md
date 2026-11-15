@@ -4,10 +4,10 @@ date: 2026-11-29
 startTime: "20:00"
 endTime: "23:00"
 fee: "10,000 KRW"
-location: "Location: Enough Lounge
+location: "Enough Lounge
   11 Toegeong-ro 17gil
   Mapu-gu Seoul"
-address: "Location: Enough Lounge
+address: "Enough Lounge
   11 Toegeong-ro 17gil
   Mapu-gu Seoul"
 registrationUrl: "https://meetup.com/"

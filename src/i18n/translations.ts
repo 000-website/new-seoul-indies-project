@@ -15,6 +15,10 @@ export const translations = {
     //meetup ------------------
     meetupT1: "Next Meetup",
     meetupT2: "Previous Meetups",
+    //latest-games ------------------
+    latGamesT1: "Games from Korea",
+    latGamesT2: "The newest games from our community",
+    latGamesB1: "View all games",
     //FAQ ------------------
     faq: {
       title: "FAQ",
@@ -65,6 +69,9 @@ export const translations = {
       "디스코드 서버에 참여하거나 소셜 미디어를 통해 궁금한 점을 문의해 주세요!",
     meetupT1: "다음 모임",
     meetupT2: "이전 모임",
+    latGamesT1: "Games from Korea",
+    latGamesT2: "The newest games from our community",
+    latGamesB1: "View all games",
     faq: {
       title: "FAQ",
       items: [

@@ -4,6 +4,7 @@ import { translations } from "../i18n/translations";
 import Welcome from "../components/home/Welcome.astro";
 import FAQ from "../components/home/FAQ.astro";
 import Meetups  from "../components/home/Meetups.astro";
+import  LatestGames  from "../components/home/LatestGames.astro";
 
 const t = translations.en;
 
@@ -11,6 +12,7 @@ const t = translations.en;
 <Layout title={t.siteTitle}>
 <Welcome t={t}/>
 <Meetups t={t}/>
+<LatestGames t={t} />
 <FAQ  
 title={t.faq.title}
 items={t.faq.items}/>

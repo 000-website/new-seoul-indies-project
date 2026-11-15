@@ -79,4 +79,35 @@ const meetups = defineCollection({
     cover: z.string().optional(),
   }),
 });
-export const collections = { posts, games, meetups };
+
+const friends = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx,mdoc}",
+    base: "./src/content/friends",
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    image: z.string().optional(),
+    website: z.string().url().optional(),
+
+    socials: z
+      .array(
+        z.object({
+          platform: z.enum([
+            "instagram",
+            "youtube",
+            "twitter",
+            "facebook",
+            "discord",
+            "tiktok",
+            "twitch",
+          ]),
+          url: z.string().url(),
+        }),
+      )
+      .default([]),
+  }),
+});
+
+export const collections = { posts, games, meetups, friends };

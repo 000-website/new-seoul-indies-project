@@ -11,7 +11,7 @@ const homeUrl = getRelativeLocaleUrl(locale, "");
 const newsUrl = getRelativeLocaleUrl(locale, "blog");
 const gamesUrl = getRelativeLocaleUrl(locale, "games");
 // const presentingUrl = getRelativeLocaleUrl(locale, "presenting");
-// const friendsUrl = getRelativeLocaleUrl(locale, "friends");
+const friendsUrl = getRelativeLocaleUrl(locale, "friends");
 const { title } = Astro.props;
 
 interface Props {
@@ -57,7 +57,7 @@ interface Props {
         {t.presenting}
       </a>
 
-      <a href="#" class="no-underline hover:text-slate-500">
+      <a href={friendsUrl} class="no-underline hover:text-slate-500">
         {t.friends}
       </a>
     </nav>
@@ -131,7 +131,7 @@ interface Props {
     </a>
 
     <a
-      href="#"
+      href={friendsUrl}
       class="rounded-md px-3 py-2 no-underline hover:bg-slate-100"
     >
       {t.friends}
