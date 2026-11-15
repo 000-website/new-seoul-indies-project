@@ -129,6 +129,16 @@ https://developers.cloudflare.com/pages/configuration/custom-domains/
 
 - Go to your website/admin and try to loging using your Github credentials.
 
+### Edit the admin config
+
+- On the repository go to the public folder and open the **config.yml** file.
+
+- Click the pencil icon to edit the file.
+
+- Change the lines 3 (repo) and 5 (base_url) so they point to your repository and worker.
+
+- Commit the changes.
+
 ## ADDING CONTENT
 
 **Coming Soon**
@@ -136,3 +146,15 @@ https://developers.cloudflare.com/pages/configuration/custom-domains/
 ## COLLABORATING
 
 **Coming Soon**
+
+## UPDATING YOUR FORK WITH THE CHANGES OF THE ORIGINAL REPOSITORY
+
+- Go to your repository page.
+
+- Locate the Sync fork dropdown button located near the top of the file list (next to the branch selector or "Code" button).
+
+- Click Sync fork, then click Update branch to merge the latest commits from the upstream repository.
+
+- If the repository modified the exact same lines of code that you changed, GitHub will alert you that it cannot automatically merge and will prompt you to resolve conflicts.
+
+- **How to resolve conflicts - Coming Soon**

@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SocialIcon from '../../components/SocialIcon.astro';
+
+const friends = await getCollection('friends');
+---
+
+<Layout title="Friends">
+  <h1 style="font-size: 2.5rem; margin-bottom: 0.1rem;">Friends 친구들</h1>
+  <p style="margin-bottom: 2rem;">Other indie communities in the region</p>
+
+  <div class="flex flex-col gap-6">
+    {friends.map((friend) => (
+      <article class="group overflow-hidden ">
+        <div class="grid grid-cols-1 sm:grid-cols-[220px_1fr]">
+          {friend.data.image && (
+            <div class="aspect-[16/10] overflow-hidden bg-slate-100 sm:aspect-auto sm:min-h-full">
+              <img
+                src={friend.data.image}
+                alt={friend.data.title}
+                loading="lazy"
+                class="h-full w-full object-cover "
+              />
+            </div>
+          )}
+
+          <div class="flex flex-col p-5 sm:p-6">
+            <div class="flex-1">
+              <h2 class="mb-3 text-xl font-semibold tracking-tight text-slate-900 transition-colors group-hover:text-slate-600">
+                {friend.data.title}
+              </h2>
+
+              <p class="mb-4 leading-7 text-slate-600">
+                {friend.data.description}
+              </p>
+
+         
+            </div>
+
+            {friend.data.socials.length > 0 && (
+              <div class="mt-5 flex items-center gap-4 border-t border-slate-100 pt-4">
+                     {friend.data.website && (
+                <a
+                  href={friend.data.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm font-medium text-slate-500 underline underline-offset-4 hover:text-slate-900"
+                >
+                  Website
+                </a>
+              )}
+                {friend.data.socials.map((social) => (
+                  <a
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${friend.data.title} on ${social.platform}`}
+                    title={social.platform}
+                    class="text-slate-500 transition hover:text-slate-950"
+                  >
+                    <SocialIcon platform={social.platform} size={20} />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</Layout>

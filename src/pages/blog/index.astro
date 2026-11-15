@@ -1,23 +1,33 @@
 ---
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
 
-const posts: CollectionEntry<'posts'>[] = await getCollection('posts');
+const posts: CollectionEntry<"posts">[] = await getCollection("posts");
+
+const sortedPosts = [...posts].sort((a, b) => {
+  const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
+  const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
+
+  return dateB - dateA;
+});
 ---
 
 <Layout title="Blog">
-  <!-- <p><a href="/" style="color: #38bdf8; text-decoration: none;">&larr; Home</a></p> -->
-  <h1 style="font-size: 2.5rem; margin-bottom: 0.1rem;">News 뉴스</h1>
-  <p  style="margin-bottom: 2rem;">Updates from our community</p>
+  <main class="mx-auto max-w-7xl px-4">
+    <header class="mb-10">
+      <h1 class="mb-1 text-4xl font-bold tracking-tight">News 뉴스</h1>
+      <p class="text-gray-500">Updates from our community</p>
+    </header>
 
-  <div class="flex flex-col gap-6">
-      {posts.map((post) => (
+    <div id="blog-grid" class="flex flex-col gap-6">
+      {sortedPosts.map((post, index) => (
         <article
-          class="group overflow-hidden border border-slate-200 transition-colors hover:border-slate-400"
+          class="blog-card group overflow-hidden border border-slate-200 transition-colors hover:border-slate-400"
+          data-original-index={index}
         >
           <a
-            href={`/blog/${post.id}`}
+            href={`/blog/${post.id}/`}
             class="grid grid-cols-1 sm:grid-cols-[220px_1fr]"
           >
             {post.data.coverImage && (
@@ -43,9 +53,7 @@ const posts: CollectionEntry<'posts'>[] = await getCollection('posts');
               </h2>
 
               {post.data.excerpt && (
-                <p class="mb-4 leading-7 text-slate-600">
-                  {post.data.excerpt}
-                </p>
+                <p class="mb-4 leading-7 text-slate-600">{post.data.excerpt}</p>
               )}
 
               <span class="text-sm font-medium text-slate-500">
@@ -56,4 +64,157 @@ const posts: CollectionEntry<'posts'>[] = await getCollection('posts');
         </article>
       ))}
     </div>
+
+    <nav
+      id="blog-pagination"
+      class="mt-10 flex flex-wrap items-center justify-center gap-2"
+      aria-label="Blog pagination"
+    ></nav>
+
+    <div
+      id="blog-empty"
+      class="hidden border border-dashed border-gray-300 p-12 text-center"
+    >
+      <h2 class="text-xl font-semibold">No posts found</h2>
+    </div>
+  </main>
 </Layout>
+
+<script>
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>(".blog-card"),
+  );
+
+  const grid = document.querySelector<HTMLElement>("#blog-grid");
+  const empty = document.querySelector<HTMLElement>("#blog-empty");
+  const pagination = document.querySelector<HTMLElement>("#blog-pagination");
+
+  const ITEMS_PER_PAGE = 9;
+
+  let currentPage = 1;
+
+  function readURL() {
+    const params = new URLSearchParams(window.location.search);
+
+    currentPage = Math.max(1, Number(params.get("page")) || 1);
+  }
+
+  function updateURL() {
+    const url = new URL(window.location.href);
+
+    if (currentPage > 1) {
+      url.searchParams.set("page", String(currentPage));
+    } else {
+      url.searchParams.delete("page");
+    }
+
+    window.history.replaceState({}, "", url);
+  }
+
+  function createPageButton(
+    label: string,
+    page: number,
+    active = false,
+    disabled = false,
+  ) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.textContent = label;
+    button.disabled = disabled;
+
+    button.className = [
+      "min-w-10 px-3 py-2 text-sm border transition",
+      active
+        ? "bg-black text-white border-black"
+        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100",
+      disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer",
+    ].join(" ");
+
+    button.setAttribute(
+      "aria-label",
+      label === "Previous"
+        ? "Previous page"
+        : label === "Next"
+          ? "Next page"
+          : `Page ${page}`,
+    );
+
+    if (active) {
+      button.setAttribute("aria-current", "page");
+    }
+
+    button.addEventListener("click", () => {
+      if (disabled) return;
+
+      currentPage = page;
+      renderPosts();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    return button;
+  }
+
+  function renderPagination(totalPages: number) {
+    if (!pagination) return;
+
+    pagination.innerHTML = "";
+
+    if (totalPages <= 1) return;
+
+    pagination.appendChild(
+      createPageButton("Previous", currentPage - 1, false, currentPage === 1),
+    );
+
+    for (let page = 1; page <= totalPages; page++) {
+      pagination.appendChild(
+        createPageButton(String(page), page, page === currentPage),
+      );
+    }
+
+    pagination.appendChild(
+      createPageButton(
+        "Next",
+        currentPage + 1,
+        false,
+        currentPage === totalPages,
+      ),
+    );
+  }
+
+  function renderPosts(updateHistory = true) {
+    const totalPages = Math.ceil(cards.length / ITEMS_PER_PAGE);
+
+    currentPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const visibleCards = cards.slice(start, start + ITEMS_PER_PAGE);
+
+    cards.forEach((card) => {
+      card.hidden = true;
+    });
+
+    visibleCards.forEach((card) => {
+      card.hidden = false;
+      grid?.appendChild(card);
+    });
+
+    if (empty) {
+      empty.classList.toggle("hidden", cards.length > 0);
+    }
+
+    renderPagination(totalPages);
+
+    if (updateHistory) {
+      updateURL();
+    }
+  }
+
+  window.addEventListener("popstate", () => {
+    readURL();
+    renderPosts(false);
+  });
+
+  readURL();
+  renderPosts(false);
+</script>

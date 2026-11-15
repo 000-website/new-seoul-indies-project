@@ -1,124 +1,56 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
+import Layout from "../../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { translations } from "../../../i18n/translations";
+const t = translations.en;
 
-const games = await getCollection('games');
+const games = await getCollection("games");
 
 const sortedGames = [...games].sort((a, b) => {
-  const dateA = a.data.publishDate
-    ? new Date(a.data.publishDate).getTime()
-    : 0;
-  const dateB = b.data.publishDate
-    ? new Date(b.data.publishDate).getTime()
-    : 0;
+  const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
+  const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
 
   return dateB - dateA;
 });
-
-const genres = [...new Set(
-  games.map((game) => game.data.genre).filter(Boolean)
-)].sort();
-
-const statuses = [...new Set(
-  games.map((game) => game.data.status).filter(Boolean)
-)].sort();
 ---
 
 <Layout title="Explore Indie Games">
   <main class="mx-auto max-w-7xl px-4">
     <header class="mb-10">
-      <!-- <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-indigo-600">
-        Seoul Indies
-      </p>
-      <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
-        Explore Indie Games
-      </h1>
-      <p class="mt-4 max-w-2xl text-gray-500">
-        Discover games created by Korea's indie game community.
-      </p> -->
-       
-       <h1 style="font-size: 2.5rem; margin-bottom: 0.1rem;">Games 게임</h1>
-  <p  style="margin-bottom: 2rem;">Made by people in our community</p>
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <!-- Title -->
+        <div>
+          <h1 class="mb-1 text-4xl font-bold tracking-tight">Games 게임</h1>
+          <p class="text-gray-500">Made by people in our community</p>
+        </div>
 
+        <!-- Search -->
+        <label class="block w-full md:max-w-md">
+          <span class="mb-2 block text-sm font-medium">Search games</span>
+          <input
+            id="game-search"
+            type="search"
+            placeholder="Search title, developer..."
+            class="w-full border border-gray-200 bg-white px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          />
+        </label>
+      </div>
     </header>
-
-    <!-- Search and filters -->
-    <section class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <label class="block">
-        <span class="mb-2 block text-sm font-medium">Search games</span>
-        <input
-          id="game-search"
-          type="search"
-          placeholder="Search title, developer..."
-          class="w-full  border border-gray-200 bg-white px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-        />
-      </label>
-
-      <label class="block">
-        <span class="mb-2 block text-sm font-medium">Genre</span>
-        <select
-          id="game-genre"
-          class="w-full  border border-gray-200 bg-white px-4 py-3"
-        >
-          <option value="">All genres</option>
-          {genres.map((genre) => (
-            <option value={genre}>{genre}</option>
-          ))}
-        </select>
-      </label>
-
-      <label class="block">
-        <span class="mb-2 block text-sm font-medium">Development status</span>
-        <select
-          id="game-status"
-          class="w-full  border border-gray-200 bg-white px-4 py-3"
-        >
-          <option value="">All statuses</option>
-          {statuses.map((status) => (
-            <option value={status}>{status}</option>
-          ))}
-        </select>
-      </label>
-
-      <label class="block">
-        <span class="mb-2 block text-sm font-medium">Sort by</span>
-        <select
-          id="game-sort"
-          class="w-full  border border-gray-200 bg-white px-4 py-3"
-        >
-          <option value="newest">Newest</option>
-          <option value="az">Title A–Z</option>
-          <option value="za">Title Z–A</option>
-        </select>
-      </label>
-    </section>
-
-    <div class="mb-6 flex items-center justify-between gap-4">
-      <p id="game-count" class="text-sm text-gray-500" aria-live="polite">
-        {games.length} games
-      </p>
-      <button
-        id="game-reset"
-        type="button"
-        class="text-sm font-medium text-indigo-600 hover:text-indigo-800"
-      >
-        Clear filters
-      </button>
-    </div>
-
     <!-- All cards are rendered at build time -->
     <div id="games-grid" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {sortedGames.map((game) => (
         <article
-          class="game-card group overflow-hidden  border border-gray-200 bg-white transition "
+          class="game-card group overflow-hidden border border-gray-200 bg-white transition"
           data-title={game.data.title}
-          data-description={game.data.description ?? ''}
-          data-developer={game.data.developer ?? ''}
-          data-genre={game.data.genre ?? ''}
-          data-status={game.data.status ?? ''}
-          data-date={game.data.publishDate
-            ? new Date(game.data.publishDate).getTime()
-            : 0}
+          data-description={game.data.description ?? ""}
+          data-developer={game.data.developer ?? ""}
+          data-genre={game.data.genre ?? ""}
+          data-status={game.data.status ?? ""}
+          data-date={
+            game.data.publishDate
+              ? new Date(game.data.publishDate).getTime()
+              : 0
+          }
           data-original-index={sortedGames.indexOf(game)}
         >
           <a href={`/games/${game.id}/`} class="block h-full">
@@ -132,22 +64,7 @@ const statuses = [...new Set(
             )}
 
             <div class="p-5">
-              {/* <div class="mb-3 flex flex-wrap gap-2">
-                {game.data.genre && (
-                  <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-                    {game.data.genre}
-                  </span>
-                )}
-                {game.data.status && (
-                  <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                    {game.data.status}
-                  </span>
-                )}
-              </div> */}
-
-              <h2 class="text-xl font-bold">
-                {game.data.title}
-              </h2>
+              <h2 class="text-xl font-bold">{game.data.title}</h2>
 
               {game.data.developer && (
                 <p class="mt-1 text-sm text-gray-500">
@@ -163,8 +80,15 @@ const statuses = [...new Set(
         </article>
       ))}
     </div>
-
-    <div id="games-empty" class="hidden border border-dashed border-gray-300 p-12 text-center">
+    <nav
+      id="games-pagination"
+      class="mt-10 flex items-center justify-center gap-2"
+      aria-label="Games pagination"
+    ></nav>
+    <div
+      id="games-empty"
+      class="hidden border border-dashed border-gray-300 p-12 text-center"
+    >
       <h2 class="text-xl font-semibold">No games found</h2>
       <p class="mt-2 text-gray-500">Try changing your search or filters.</p>
     </div>
@@ -172,107 +96,170 @@ const statuses = [...new Set(
 </Layout>
 
 <script>
-  const searchInput = document.querySelector<HTMLInputElement>('#game-search')!;
-  const genreSelect = document.querySelector<HTMLSelectElement>('#game-genre')!;
-  const statusSelect = document.querySelector<HTMLSelectElement>('#game-status')!;
-  const sortSelect = document.querySelector<HTMLSelectElement>('#game-sort')!;
-  const cards = Array.from(document.querySelectorAll<HTMLElement>('.game-card'));
-  const grid = document.querySelector<HTMLElement>('#games-grid')!;
-  const count = document.querySelector<HTMLElement>('#game-count')!;
-  const empty = document.querySelector<HTMLElement>('#games-empty')!;
-  const reset = document.querySelector<HTMLButtonElement>('#game-reset')!;
+  const searchInput = document.querySelector<HTMLInputElement>("#game-search");
+
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>(".game-card"),
+  );
+
+  const grid = document.querySelector<HTMLElement>("#games-grid");
+  const empty = document.querySelector<HTMLElement>("#games-empty");
+  const pagination = document.querySelector<HTMLElement>("#games-pagination");
+
+  const ITEMS_PER_PAGE = 9;
+
+  let currentPage = 1;
 
   function readURL() {
     const params = new URLSearchParams(window.location.search);
 
-    searchInput.value = params.get('search') ?? '';
-    genreSelect.value = params.get('genre') ?? '';
-    statusSelect.value = params.get('status') ?? '';
+    if (searchInput) {
+      searchInput.value = params.get("search") ?? "";
+    }
 
-    const requestedSort = params.get('sort') ?? 'newest';
-    sortSelect.value = ['newest', 'az', 'za'].includes(requestedSort)
-      ? requestedSort
-      : 'newest';
+    currentPage = Math.max(1, Number(params.get("page")) || 1);
   }
 
   function updateURL() {
     const url = new URL(window.location.href);
+    const query = searchInput?.value.trim() ?? "";
 
-    const values: Record<string, string> = {
-      search: searchInput.value.trim(),
-      genre: genreSelect.value,
-      status: statusSelect.value,
-      sort: sortSelect.value === 'newest' ? '' : sortSelect.value,
-    };
-
-    for (const [key, value] of Object.entries(values)) {
-      if (value) url.searchParams.set(key, value);
-      else url.searchParams.delete(key);
+    if (query) {
+      url.searchParams.set("search", query);
+    } else {
+      url.searchParams.delete("search");
     }
 
-    window.history.replaceState({}, '', url);
+    if (currentPage > 1) {
+      url.searchParams.set("page", String(currentPage));
+    } else {
+      url.searchParams.delete("page");
+    }
+
+    window.history.replaceState({}, "", url);
+  }
+
+  function createPageButton(
+    label: string,
+    page: number,
+    active = false,
+    disabled = false,
+  ) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.textContent = label;
+    button.disabled = disabled;
+
+    button.className = [
+      "min-w-10 px-3 py-2 text-sm border transition",
+      active
+        ? "bg-black text-white border-black"
+        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100",
+      disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer",
+    ].join(" ");
+
+    button.setAttribute(
+      "aria-label",
+      label === "Previous"
+        ? "Previous page"
+        : label === "Next"
+          ? "Next page"
+          : `Page ${page}`,
+    );
+
+    if (active) {
+      button.setAttribute("aria-current", "page");
+    }
+
+    button.addEventListener("click", () => {
+      if (disabled) return;
+
+      currentPage = page;
+      filterGames();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    return button;
+  }
+
+  function renderPagination(totalPages: number) {
+    if (!pagination) return;
+
+    pagination.innerHTML = "";
+
+    if (totalPages <= 1) return;
+
+    pagination.appendChild(
+      createPageButton("Previous", currentPage - 1, false, currentPage === 1),
+    );
+
+    for (let page = 1; page <= totalPages; page++) {
+      pagination.appendChild(
+        createPageButton(String(page), page, page === currentPage),
+      );
+    }
+
+    pagination.appendChild(
+      createPageButton(
+        "Next",
+        currentPage + 1,
+        false,
+        currentPage === totalPages,
+      ),
+    );
   }
 
   function filterGames(updateHistory = true) {
-    const query = searchInput.value.trim().toLowerCase();
-    const genre = genreSelect.value;
-    const status = statusSelect.value;
+    const query = searchInput?.value.trim().toLowerCase() ?? "";
 
     const filtered = cards.filter((card) => {
       const searchableText = [
         card.dataset.title,
         card.dataset.description,
         card.dataset.developer,
-      ].join(' ').toLowerCase();
+        card.dataset.genre,
+        card.dataset.status,
+      ]
+        .join(" ")
+        .toLowerCase();
 
-      return (
-        searchableText.includes(query) &&
-        (!genre || card.dataset.genre === genre) &&
-        (!status || card.dataset.status === status)
-      );
+      return searchableText.includes(query);
     });
 
-    filtered.sort((a, b) => {
-      if (sortSelect.value === 'az') {
-        return (a.dataset.title ?? '').localeCompare(b.dataset.title ?? '');
-      }
+    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
 
-      if (sortSelect.value === 'za') {
-        return (b.dataset.title ?? '').localeCompare(a.dataset.title ?? '');
-      }
+    currentPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
 
-      return Number(b.dataset.date ?? 0) - Number(a.dataset.date ?? 0);
-    });
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const visibleCards = filtered.slice(start, start + ITEMS_PER_PAGE);
 
-    for (const card of cards) {
+    cards.forEach((card) => {
       card.hidden = true;
-    }
+    });
 
-    for (const card of filtered) {
+    visibleCards.forEach((card) => {
       card.hidden = false;
-      grid.appendChild(card);
+      grid?.appendChild(card);
+    });
+
+    if (empty) {
+      empty.classList.toggle("hidden", filtered.length > 0);
     }
 
-    count.textContent = `${filtered.length} game${filtered.length === 1 ? '' : 's'} found`;
-    empty.classList.toggle('hidden', filtered.length > 0);
+    renderPagination(totalPages);
 
-    if (updateHistory) updateURL();
+    if (updateHistory) {
+      updateURL();
+    }
   }
 
-  searchInput.addEventListener('input', () => filterGames());
-  genreSelect.addEventListener('change', () => filterGames());
-  statusSelect.addEventListener('change', () => filterGames());
-  sortSelect.addEventListener('change', () => filterGames());
-
-  reset.addEventListener('click', () => {
-    searchInput.value = '';
-    genreSelect.value = '';
-    statusSelect.value = '';
-    sortSelect.value = 'newest';
+  searchInput?.addEventListener("input", () => {
+    currentPage = 1;
     filterGames();
   });
 
-  window.addEventListener('popstate', () => {
+  window.addEventListener("popstate", () => {
     readURL();
     filterGames(false);
   });
