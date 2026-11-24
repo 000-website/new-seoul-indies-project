@@ -1,19 +1,14 @@
 ---
-import Layout from "../../layouts/Layout.astro"
-import { translations } from "../../i18n/translations";
+import Layout from "../../layouts/Layout.astro";
 import Welcome from "../../components/home/Welcome.astro";
+import Meetups from "../../components/home/Meetups.astro";
+import LatestGames from "../../components/home/LatestGames.astro";
 import FAQ from "../../components/home/FAQ.astro";
-import Meetups  from "../../components/home/Meetups.astro";
-import  LatestGames  from "../../components/home/LatestGames.astro";
-
-const t = translations.ko;
-
 ---
-<Layout title={t.siteTitle}>
-<Welcome t={t}/>
-<Meetups t={t}/>
-<LatestGames t={t}/>
-<FAQ  
-title={t.faq.title}
-items={t.faq.items}/>
+
+<Layout>
+  <Welcome locale="ko" />
+  <Meetups locale="ko" />
+  <LatestGames locale="ko" limit={3} />
+  <FAQ locale="ko" />
 </Layout>

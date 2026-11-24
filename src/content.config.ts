@@ -17,28 +17,19 @@ const games = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-
     developer: z.string(),
     developerWebsite: z.string().url().optional(),
-
     status: z.enum(["Prototype", "In Development", "Released"]),
-
     genre: z.string(),
-
     cover: z.string().optional(),
-
     platforms: z.array(z.string()).default([]),
-
     engine: z.string().optional(),
-
     teamSize: z.number().optional(),
-
     website: z.string().url().optional(),
     github: z.string().url().optional(),
     itch: z.string().url().optional(),
     steam: z.string().url().optional(),
     discord: z.string().url().optional(),
-
     tags: z.array(z.string()).default([]),
 
     media: z
@@ -74,7 +65,8 @@ const meetups = defineCollection({
     fee: z.string(),
     location: z.string(),
     address: z.string(),
-    mapUrl: z.string().url().optional(),
+    // mapUrl: z.string().url().optional(),
+    mapEmbedUrl: z.string().url().optional(),
     registrationUrl: z.string().url().optional(),
     cover: z.string().optional(),
   }),

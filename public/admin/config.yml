@@ -5,6 +5,11 @@ backend:
   base_url: https://siauth.axeldevelops.workers.dev/ # Your Worker URL
   auth_endpoint: auth # Points to your /auth route
 
+i18n:
+  structure: multiple_folders
+  locales: [en, ko]
+  default_locale: en
+
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
@@ -13,52 +18,69 @@ collections:
     label: Blog Posts
     folder: src/content/posts
     create: true
+    i18n: true
     slug: "{{slug}}"
     extension: md
     fields:
       - label: Title
         name: title
         widget: string
+        i18n: true
+
       - label: Excerpt
         name: excerpt
         widget: text
         required: false
+        i18n: true
+
       - label: Cover Image
         name: coverImage
         widget: image
         required: false
-        media_folder: "/public/images/posts"
-        public_folder: "/images/posts"
+        i18n: duplicate
+
       - label: Publish Date
         name: publishDate
         widget: datetime
         required: false
         date_format: "YYYY-MM-DD"
         time_format: false
+        i18n: duplicate
+
       - label: Body
         name: body
         widget: markdown
+        i18n: true
 
   - name: games
     label: Games Directory
     folder: src/content/games
     create: true
+    i18n: true
     slug: "{{slug}}"
     extension: md
     fields:
       - label: Title
         name: title
         widget: string
+        i18n: true
+
       - label: Description
         name: description
         widget: text
+        i18n: true
+
       - label: Developer
         name: developer
         widget: string
+        i18n: duplicate
+
       - label: Developer Website
         name: developerWebsite
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Status
         name: status
         widget: select
@@ -67,68 +89,97 @@ collections:
           - In Development
           - Released
         default: Prototype
+        i18n: duplicate
+
       - label: Genre
         name: genre
         widget: string
+        i18n: true
+
       - label: Cover Image
         name: cover
         widget: image
         required: false
+        i18n: duplicate
+
       - label: Platforms
         name: platforms
         widget: list
         required: false
         default: []
+        i18n: true
+
       - label: Game Engine
         name: engine
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Team Size
         name: teamSize
         widget: number
         required: false
         value_type: int
         min: 1
+        i18n: duplicate
+
       - label: Game Website
         name: website
         widget: string
         required: false
+        i18n: duplicate
+
       - label: GitHub
         name: github
         widget: string
         required: false
+        i18n: duplicate
+
       - label: itch.io
         name: itch
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Steam
         name: steam
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Discord
         name: discord
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Tags
         name: tags
         widget: list
         required: false
         default: []
+        i18n: true
+
       - label: Publish Date
         name: publishDate
         widget: datetime
         required: false
         date_format: "YYYY-MM-DD"
         time_format: false
+        i18n: duplicate
+
       - label: Draft
         name: draft
         widget: boolean
         required: false
         default: false
+        i18n: duplicate
+
       - label: Media Gallery
         name: media
         widget: list
         required: false
+        i18n: true
         types:
           - name: image
             label: Image
@@ -141,6 +192,7 @@ collections:
               - label: Image Source
                 name: src
                 widget: string
+
           - name: youtube
             label: YouTube Video
             widget: object
@@ -152,92 +204,118 @@ collections:
               - label: YouTube Video ID
                 name: id
                 widget: string
+
       - label: Body
         name: body
         widget: markdown
+        i18n: true
 
   - name: meetups
     label: Meetups
     folder: src/content/meetups
     create: true
+    i18n: true
     slug: "{{slug}}"
     extension: md
     fields:
       - label: Title
         name: title
         widget: string
+        i18n: true
+
       - label: Date
         name: date
         widget: datetime
         date_format: "YYYY-MM-DD"
         time_format: false
+        i18n: duplicate
+
       - label: Start Time
         name: startTime
         widget: string
         required: false
-        hint: "Example: 14:00"
+        i18n: duplicate
+
       - label: End Time
         name: endTime
         widget: string
         required: false
-        hint: "Example: 17:00"
+        i18n: duplicate
+
       - label: Fee
         name: fee
         widget: string
-        hint: "Example: Free or ₩10,000"
+        i18n: true
+
       - label: Location Name
         name: location
         widget: string
+        i18n: true
+
       - label: Address
         name: address
         widget: string
-      - label: Map URL
-        name: mapUrl
+        i18n: duplicate
+
+      - label: Map Embed URL
+        name: mapEmbedUrl
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Registration URL
         name: registrationUrl
         widget: string
         required: false
+        i18n: duplicate
+
       - label: Cover Image
         name: cover
         widget: image
         required: false
+        i18n: duplicate
+
       - label: Body
         name: body
         widget: markdown
+        i18n: true
 
   - name: friends
     label: Friends & Communities
     folder: src/content/friends
     create: true
+    i18n: true
     slug: "{{slug}}"
     extension: md
     fields:
       - label: Name
         name: title
         widget: string
+        i18n: true
 
       - label: Description
         name: description
         widget: text
+        i18n: true
 
       - label: Image
         name: image
         widget: string
         required: false
-        hint: "Enter a local path (e.g. /images/friends/community.webp) or an external image URL."
+        i18n: duplicate
 
       - label: Website
         name: website
         widget: string
         required: false
+        i18n: duplicate
 
       - label: Social Links
         name: socials
         widget: list
         required: false
         default: []
+        i18n: true
         fields:
           - label: Platform
             name: platform

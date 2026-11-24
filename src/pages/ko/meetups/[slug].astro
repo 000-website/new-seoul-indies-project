@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import MeetupDetail from "../../../components/meetups/MeetupDetail.astro";
+import {
+  filterByLocale,
+  getLocalizedSlug,
+} from "../../../utils/localizedRoutes";
+
+export async function getStaticPaths() {
+  const allMeetups = await getCollection("meetups");
+  const meetups = filterByLocale(allMeetups, "ko");
+
+  return meetups.map((meetup) => ({
+    params: {
+      slug: getLocalizedSlug(meetup.id),
+    },
+    props: { meetup },
+  }));
+}
+
+const { meetup } = Astro.props;
+---
+
+<MeetupDetail meetup={meetup} locale="ko" />

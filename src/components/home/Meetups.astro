@@ -1,10 +1,17 @@
 ---
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
+import { translations } from "../../i18n/translations";
+import { getLocalizedUrl, filterByLocale } from "../../utils/localizedRoutes";
 
-const { t } = Astro.props;
+interface Props {
+  locale: "en" | "ko";
+}
 
-const meetups: CollectionEntry<"meetups">[] = await getCollection("meetups");
+const { locale } = Astro.props;
+const t = translations[locale];
+
+const meetups = filterByLocale(await getCollection("meetups"), locale);
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
@@ -20,21 +27,16 @@ const previousMeetups = sortedMeetups
   .reverse();
 
 function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("en", {
+  return new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en", {
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(date);
 }
 
-// function getMapSrc(meetup: CollectionEntry<"meetups">) {
-//   return (
-//     meetup.data.mapEmbedUrl ??
-//     `https://maps.google.com/maps?q=${encodeURIComponent(
-//       meetup.data.address
-//     )}&output=embed`
-//   );
-// }
+function getMeetupUrl(id: string) {
+  return getLocalizedUrl(id, locale, "meetups");
+}
 
 function getMapSrc(meetup: CollectionEntry<"meetups">) {
   return (
@@ -58,13 +60,12 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
 
 <section class="mb-16">
   <div class="mb-6">
-    <h3 class="text-2xl font-bold sm:text-3xl">{t.meetupT1}</h3>
+    <h3 class="text-2xl font-bold sm:text-3xl">{t.meetupTitle}</h3>
   </div>
 
   {nextMeetup ? (
     <div class="group mb-10 grid overflow-hidden border border-slate-700 transition hover:border-slate-500 sm:grid-cols-5">
-      <!-- Map preview: top on mobile, right on desktop -->
-
+      <!-- Map preview -->
       <div class="order-2 flex min-w-0 flex-col items-center overflow-hidden sm:order-2 sm:col-span-2">
         <div class="pt-6 pb-2">
           <iframe
@@ -79,7 +80,8 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
             allowfullscreen
           ></iframe>
         </div>
-        <div class="flex w-full shrink-0 justify-end gap-4 pt-0 pb-6 px-5">
+
+        <div class="flex w-full shrink-0 justify-end gap-4 px-5 pt-0 pb-6">
           {Object.entries(getMapLinks(nextMeetup)).map(([platform, url]) => (
             <a
               href={url}
@@ -108,37 +110,32 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
 
         <p class="mb-1 text-sm">{nextMeetup.data.location}</p>
 
-        {/* <p class="mb-2 text-sm text-slate-400">
-          {nextMeetup.data.address}
-        </p> */}
-
         <p class="mb-6 text-sm">
-          <span class="font-semibold">Entry:</span> {nextMeetup.data.fee}
+          <span class="font-semibold">{t.meetupEntry}</span>{" "}
+          {nextMeetup.data.fee}
         </p>
 
         <a
-          href={`/meetups/${nextMeetup.id}/`}
+          href={getMeetupUrl(nextMeetup.id)}
           class="font-semibold underline-offset-4 hover:underline"
         >
-          Meetup details <span aria-hidden="true">→</span>
+          {t.meetupDetails} <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>
   ) : (
     <div class="mb-10 border border-slate-700 p-6 sm:p-8">
-      <h4 class="text-xl font-bold">No upcoming meetups announced yet</h4>
-      <p class="mt-2 text-slate-400">
-        Check back soon for our next community gathering!
-      </p>
+      <h4 class="text-xl font-bold">{t.meetupNoUpcoming}</h4>
+      <p class="mt-2 text-slate-400">{t.meetupNoUpcomingDescription}</p>
     </div>
   )}
 
   <!-- Previous meetups -->
   <div class="mb-4 flex items-center justify-between gap-4">
-    <h4 class="text-xl font-bold">{t.meetupT2}</h4>
+    <h4 class="text-xl font-bold">{t.meetupPrevious}</h4>
 
     {previousMeetups.length > 1 && (
-      <span class="shrink-0 text-xs text-slate-500">Scroll to explore →</span>
+      <span class="shrink-0 text-xs text-slate-500">{t.meetupScroll}</span>
     )}
   </div>
 
@@ -146,7 +143,7 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
     <div class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
       {previousMeetups.map((meetup) => (
         <a
-          href={`/meetups/${meetup.id}/`}
+          href={getMeetupUrl(meetup.id)}
           class="group w-[80%] shrink-0 snap-start border border-slate-700 p-5 transition hover:border-slate-500 sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
         >
           <p class="mb-3 text-sm text-slate-400">
@@ -160,14 +157,12 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
           <p class="text-sm text-slate-400">{meetup.data.location}</p>
 
           <p class="mt-5 text-sm font-semibold">
-            View meetup <span aria-hidden="true">→</span>
+            {t.meetupView} <span aria-hidden="true">→</span>
           </p>
         </a>
       ))}
     </div>
   ) : (
-    <p class="text-sm italic text-slate-500">
-      Previous meetups will appear here after our first event.
-    </p>
+    <p class="text-sm italic text-slate-500">{t.meetupNoPrevious}</p>
   )}
 </section>

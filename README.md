@@ -158,3 +158,7 @@ https://developers.cloudflare.com/pages/configuration/custom-domains/
 - If the repository modified the exact same lines of code that you changed, GitHub will alert you that it cannot automatically merge and will prompt you to resolve conflicts.
 
 - **How to resolve conflicts - Coming Soon**
+
+## HOW THE TRANSLATIONS WORK
+
+**Coming Soon**

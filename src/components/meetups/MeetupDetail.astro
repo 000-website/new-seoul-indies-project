@@ -1,0 +1,108 @@
+---
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { translations } from "../../i18n/translations";
+
+interface Props {
+  meetup: CollectionEntry<"meetups">;
+  locale: "en" | "ko";
+}
+
+const { meetup, locale } = Astro.props;
+const t = translations[locale];
+const { Content } = await render(meetup);
+
+const mapSrc =
+  meetup.data.mapEmbedUrl ??
+  `https://maps.google.com/maps?q=${encodeURIComponent(
+    meetup.data.address,
+  )}&output=embed`;
+
+const formattedDate = new Intl.DateTimeFormat(
+  locale === "ko" ? "ko-KR" : "en",
+  {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  },
+).format(meetup.data.date);
+---
+
+<Layout title={`${meetup.data.title} | Seoul Indies`}>
+  <main class="mx-auto max-w-4xl px-4 py-12">
+    <a
+      href={t.homeUrl}
+      class="mb-8 inline-block text-sm text-slate-500 hover:text-slate-900"
+    >
+      ← {t.meetupBack}
+    </a>
+
+    <h1 class="mb-4 text-3xl font-bold sm:text-5xl">{meetup.data.title}</h1>
+
+    <div class="mb-8 grid gap-4 border border-slate-700 p-5 sm:grid-cols-2">
+      <div>
+        <p class="text-sm text-slate-400">{t.meetupDate}</p>
+        <p class="font-semibold">{formattedDate}</p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-400">{t.meetupTime}</p>
+        <p class="font-semibold">
+          {meetup.data.startTime ?? "TBA"}
+          {meetup.data.endTime ? ` – ${meetup.data.endTime}` : ""}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-400">{t.meetupFee}</p>
+        <p class="font-semibold">{meetup.data.fee}</p>
+      </div>
+
+      <div>
+        <p class="text-sm text-slate-400">{t.meetupLocation}</p>
+        <p class="font-semibold">{meetup.data.location}</p>
+      </div>
+    </div>
+
+    {meetup.data.registrationUrl && (
+      <a
+        href={meetup.data.registrationUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mb-10 inline-block rounded-lg bg-slate-100 px-6 py-3 font-semibold text-slate-900 hover:bg-white"
+      >
+        {t.meetupRegister}
+      </a>
+    )}
+
+    <article class="mb-12">
+      <Content />
+    </article>
+
+    <h2 class="mb-4 text-2xl font-bold">{t.meetupVenue}</h2>
+
+    <div class="overflow-hidden rounded-xl border border-slate-700">
+      <iframe
+        src={mapSrc}
+        title={`${t.meetupMapTitle} ${meetup.data.location}`}
+        width="100%"
+        height="380"
+        style="border: 0;"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <a
+      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(meetup.data.address)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-3 inline-block text-sm underline"
+    >
+      {t.meetupOpenMaps}
+    </a>
+  </main>
+</Layout>

@@ -1,19 +1,19 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection } from "astro:content";
+import { translations } from "../../i18n/translations";
+import { getLocalizedUrl, filterByLocale } from "../../utils/localizedRoutes";
 
 interface Props {
+  locale: "en" | "ko";
   limit?: number;
-  t?: any;
 }
 
-const {
-  limit = 3,
-  t
-} = Astro.props;
+const { locale, limit = 3 } = Astro.props;
+const t = translations[locale];
 
-const games = await getCollection('games');
+const games = filterByLocale(await getCollection("games"), locale);
 
-const latestGames = games
+const latestGames = [...games]
   .sort((a, b) => {
     const dateA = a.data.publishDate
       ? new Date(a.data.publishDate).getTime()
@@ -26,33 +26,33 @@ const latestGames = games
     return dateB - dateA;
   })
   .slice(0, limit);
+
+function getGameUrl(id: string) {
+  return getLocalizedUrl(id, locale, "games");
+}
 ---
 
 <section class="py-12">
   <div class="mb-8 flex items-end justify-between">
     <div>
-     
-      <h2 class="text-3xl font-bold tracking-tight">
-        {t.latGamesT1}
-      </h2>
-       <p class="mb-2 text-sm font-medium tracking-widest ">
-           {t.latGamesT2}
-      </p>
+      <h2 class="text-3xl font-bold tracking-tight">{t.latGamesT1}</h2>
+
+      <p class="mb-2 text-sm font-medium tracking-widest">{t.latGamesT2}</p>
     </div>
 
-    <!-- <a
-      href="/games"
+    <a
+      href={locale === "ko" ? "/ko/games/" : "/games/"}
       class="text-sm font-medium text-slate-500 transition hover:text-slate-900"
     >
-       {t.latGamesB1} →
-    </a> -->
+      {t.latGamesB1} →
+    </a>
   </div>
 
   {latestGames.length > 0 ? (
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {latestGames.map((game) => (
         <article class="group overflow-hidden border border-slate-200 transition hover:border-slate-400">
-          <a href={`/games/${game.id}`} class="block">
+          <a href={getGameUrl(game.id)} class="block">
             {game.data.cover && (
               <div class="aspect-[16/10] overflow-hidden bg-slate-100">
                 <img
@@ -64,26 +64,28 @@ const latestGames = games
               </div>
             )}
 
-           <div class="p-5">
-  <h3 class="mb-2 text-xl font-semibold tracking-tight">
-    {game.data.title}
-  </h3>
+            <div class="p-5">
+              <h3 class="mb-2 text-xl font-semibold tracking-tight">
+                {game.data.title}
+              </h3>
 
-  <p class="mb-3 text-sm font-medium text-slate-500">
-    By {game.data.developer}
-  </p>
+              {game.data.developer && (
+                <p class="mb-3 text-sm font-medium text-slate-500">
+                  {t.latGamesBy} {game.data.developer}
+                </p>
+              )}
 
-  {game.data.description && (
-    <p class="line-clamp-2 text-sm leading-6 text-slate-600">
-      {game.data.description}
-    </p>
-  )}
-</div>
+              {game.data.description && (
+                <p class="line-clamp-2 text-sm leading-6 text-slate-600">
+                  {game.data.description}
+                </p>
+              )}
+            </div>
           </a>
         </article>
       ))}
     </div>
   ) : (
-    <p class="text-slate-500">No games have been added yet.</p>
+    <p class="text-slate-500">{t.latGamesEmpty}</p>
   )}
 </section>
