@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: AFGZGZ/new-seoul-indies-project # Replace with your actual GitHub username/repo
+  repo: 000-website/new-seoul-indies-project # Replace with your actual GitHub username/repo
   branch: main
   base_url: https://siauth.axeldevelops.workers.dev/ # Your Worker URL
   auth_endpoint: auth # Points to your /auth route
