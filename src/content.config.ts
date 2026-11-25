@@ -7,7 +7,7 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     excerpt: z.string().optional(),
-    publishDate: z.string().optional(),
+    publishDate: z.coerce.date().optional(),
     coverImage: z.string().optional(),
   }),
 });
@@ -47,7 +47,7 @@ const games = defineCollection({
       )
       .optional(),
 
-    publishDate: z.date().optional(),
+    publishDate: z.coerce.date().optional(),
     draft: z.boolean().optional(),
   }),
 });

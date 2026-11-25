@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { translations } from "../../i18n/translations";
 import { getLocalizedUrl, filterByLocale } from "../../utils/localizedRoutes";
+import { formatDate } from "../../utils/formatDate";
 
 interface Props {
   locale: "en" | "ko";
@@ -14,9 +15,8 @@ const t = translations[locale];
 const posts = filterByLocale(await getCollection("posts"), locale);
 
 const sortedPosts = [...posts].sort((a, b) => {
-  const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
-
-  const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
+  const dateA = a.data.publishDate?.getTime() ?? 0;
+  const dateB = b.data.publishDate?.getTime() ?? 0;
 
   return dateB - dateA;
 });
@@ -57,7 +57,7 @@ function getPostUrl(id: string) {
             <div class="p-5 sm:p-6">
               {post.data.publishDate && (
                 <span class="text-xs font-medium uppercase tracking-wider text-slate-500">
-                  {post.data.publishDate}
+                  {formatDate(post.data.publishDate, locale)}
                 </span>
               )}
 

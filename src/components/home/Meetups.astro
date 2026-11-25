@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { translations } from "../../i18n/translations";
 import { getLocalizedUrl, filterByLocale } from "../../utils/localizedRoutes";
+import { formatDate } from "../../utils/formatDate";
 
 interface Props {
   locale: "en" | "ko";
@@ -25,14 +26,6 @@ const nextMeetup = sortedMeetups.find((meetup) => meetup.data.date >= today);
 const previousMeetups = sortedMeetups
   .filter((meetup) => meetup.data.date < today)
   .reverse();
-
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
 
 function getMeetupUrl(id: string) {
   return getLocalizedUrl(id, locale, "meetups");
@@ -99,7 +92,7 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
       <!-- Meetup details -->
       <div class="order-1 flex min-w-0 flex-col justify-center p-6 sm:order-1 sm:col-span-3 sm:p-8">
         <p class="mb-2 text-sm text-slate-400">
-          {formatDate(nextMeetup.data.date)}
+          {formatDate(nextMeetup.data.date, locale)}
           {nextMeetup.data.startTime && ` · ${nextMeetup.data.startTime}`}
           {nextMeetup.data.endTime && ` – ${nextMeetup.data.endTime}`}
         </p>
@@ -147,7 +140,7 @@ function getMapLinks(meetup: CollectionEntry<"meetups">) {
           class="group w-[80%] shrink-0 snap-start border border-slate-700 p-5 transition hover:border-slate-500 sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]"
         >
           <p class="mb-3 text-sm text-slate-400">
-            {formatDate(meetup.data.date)}
+            {formatDate(meetup.data.date, locale)}
           </p>
 
           <h5 class="mb-3 text-lg font-bold transition group-hover:text-slate-500">

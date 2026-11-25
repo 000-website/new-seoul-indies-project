@@ -15,13 +15,8 @@ const games = filterByLocale(await getCollection("games"), locale);
 
 const latestGames = [...games]
   .sort((a, b) => {
-    const dateA = a.data.publishDate
-      ? new Date(a.data.publishDate).getTime()
-      : 0;
-
-    const dateB = b.data.publishDate
-      ? new Date(b.data.publishDate).getTime()
-      : 0;
+    const dateA = a.data.publishDate?.getTime() ?? 0;
+    const dateB = b.data.publishDate?.getTime() ?? 0;
 
     return dateB - dateA;
   })

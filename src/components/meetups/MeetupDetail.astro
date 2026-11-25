@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { translations } from "../../i18n/translations";
+import { formatDate } from "../../utils/formatDate";
 
 interface Props {
   meetup: CollectionEntry<"meetups">;
@@ -19,15 +20,7 @@ const mapSrc =
     meetup.data.address,
   )}&output=embed`;
 
-const formattedDate = new Intl.DateTimeFormat(
-  locale === "ko" ? "ko-KR" : "en",
-  {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  },
-).format(meetup.data.date);
+const formattedDate = formatDate(meetup.data.date, locale, "long");
 ---
 
 <Layout title={`${meetup.data.title} | Seoul Indies`}>

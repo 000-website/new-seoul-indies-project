@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { translations } from "../../i18n/translations";
+import { formatDate } from "../../utils/formatDate";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -44,7 +45,7 @@ const blogUrl = locale === "ko" ? "/ko/blog/" : "/blog/";
 
       {post.data.publishDate && (
         <p class="mb-3 text-sm font-medium uppercase tracking-wider text-slate-500">
-          {post.data.publishDate}
+          {formatDate(post.data.publishDate, locale)}
         </p>
       )}
 
