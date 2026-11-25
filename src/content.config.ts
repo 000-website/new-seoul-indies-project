@@ -18,6 +18,20 @@ const optionalUrl = z.preprocess((value) => {
   return url;
 }, z.string().url().optional());
 
+const requiredUrl = z.preprocess((value) => {
+  if (typeof value !== "string") return value;
+
+  const url = value.trim();
+
+  if (!url) return value;
+
+  if (!/^https?:\/\//i.test(url)) {
+    return `https://${url}`;
+  }
+
+  return url;
+}, z.string().url());
+
 const optionalString = z.string().optional().or(z.literal(""));
 
 const optionalDate = z.preprocess(
@@ -140,7 +154,7 @@ const friends = defineCollection({
             "tiktok",
             "twitch",
           ]),
-          url: z.string().url(),
+          url: requiredUrl,
         }),
       )
       .default([]),
