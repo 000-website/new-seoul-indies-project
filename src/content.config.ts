@@ -2,34 +2,63 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+// Reusable schemas
+const optionalUrl = z.string().url().optional().or(z.literal(""));
+
+const optionalString = z.string().optional().or(z.literal(""));
+
+const optionalDate = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.coerce.date().optional(),
+);
+
+const optionalNumber = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.coerce.number().optional(),
+);
+
+// Posts
 const posts = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx,mdoc}", base: "./src/content/posts" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx,mdoc}",
+    base: "./src/content/posts",
+  }),
   schema: z.object({
     title: z.string(),
-    excerpt: z.string().optional(),
-    publishDate: z.coerce.date().optional(),
-    coverImage: z.string().optional(),
+    excerpt: optionalString,
+    publishDate: optionalDate,
+    coverImage: optionalString,
   }),
 });
 
+// Games
 const games = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx,mdoc}", base: "./src/content/games" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx,mdoc}",
+    base: "./src/content/games",
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
     developer: z.string(),
-    developerWebsite: z.string().url().optional(),
+    developerWebsite: optionalUrl,
+
     status: z.enum(["Prototype", "In Development", "Released"]),
+
     genre: z.string(),
-    cover: z.string().optional(),
+    cover: optionalString,
+
     platforms: z.array(z.string()).default([]),
-    engine: z.string().optional(),
-    teamSize: z.number().optional(),
-    website: z.string().url().optional(),
-    github: z.string().url().optional(),
-    itch: z.string().url().optional(),
-    steam: z.string().url().optional(),
-    discord: z.string().url().optional(),
+
+    engine: optionalString,
+    teamSize: optionalNumber,
+
+    website: optionalUrl,
+    github: optionalUrl,
+    itch: optionalUrl,
+    steam: optionalUrl,
+    discord: optionalUrl,
+
     tags: z.array(z.string()).default([]),
 
     media: z
@@ -47,11 +76,12 @@ const games = defineCollection({
       )
       .optional(),
 
-    publishDate: z.coerce.date().optional(),
+    publishDate: optionalDate,
     draft: z.boolean().optional(),
   }),
 });
 
+// Meetups
 const meetups = defineCollection({
   loader: glob({
     pattern: "**/*.{md,mdx,mdoc}",
@@ -60,18 +90,20 @@ const meetups = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    startTime: z.string().optional(),
-    endTime: z.string().optional(),
+    startTime: optionalString,
+    endTime: optionalString,
     fee: z.string(),
     location: z.string(),
     address: z.string(),
-    // mapUrl: z.string().url().optional(),
-    mapEmbedUrl: z.string().url().optional(),
-    registrationUrl: z.string().url().optional(),
-    cover: z.string().optional(),
+
+    mapEmbedUrl: optionalUrl,
+    registrationUrl: optionalUrl,
+
+    cover: optionalString,
   }),
 });
 
+// Friends
 const friends = defineCollection({
   loader: glob({
     pattern: "**/*.{md,mdx,mdoc}",
@@ -80,8 +112,8 @@ const friends = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    image: z.string().optional(),
-    website: z.string().url().optional(),
+    image: optionalString,
+    website: optionalUrl,
 
     socials: z
       .array(
@@ -102,4 +134,9 @@ const friends = defineCollection({
   }),
 });
 
-export const collections = { posts, games, meetups, friends };
+export const collections = {
+  posts,
+  games,
+  meetups,
+  friends,
+};
