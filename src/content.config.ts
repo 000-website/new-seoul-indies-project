@@ -3,7 +3,20 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 // Reusable schemas
-const optionalUrl = z.string().url().optional().or(z.literal(""));
+
+const optionalUrl = z.preprocess((value) => {
+  if (typeof value !== "string") return value;
+
+  const url = value.trim();
+
+  if (!url) return undefined;
+
+  if (!/^https?:\/\//i.test(url)) {
+    return `https://${url}`;
+  }
+
+  return url;
+}, z.string().url().optional());
 
 const optionalString = z.string().optional().or(z.literal(""));
 
